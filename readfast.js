@@ -11,6 +11,7 @@ textArea.onkeyup = function(){
 }
 
 var startBtn = elem("startBtn");
+var clearBtn = elem("clearBtn");
 var loadBtn = elem("loadBtn");
 var rewindToBeginningBtn = elem("rewindToBeginningBtn");
 var prevParagraphBtn = elem("prevParagraphBtn");
@@ -20,6 +21,7 @@ var decreaseSpeedBtn = elem("decreaseSpeedBtn");
 var increaseSpeedBtn = elem("increaseSpeedBtn");
 
 startBtn.onclick = startBtnClicked;
+clearBtn.onclick = clearBtnClicked;
 loadBtn.onclick = loadBtnClicked;
 rewindToBeginningBtn.onclick = rewindToBeginningBtnClicked;
 prevParagraphBtn.onclick = prevParagraphBtnClicked;
@@ -68,6 +70,10 @@ var state = {
 	}
     }
 };
+
+function clearBtnClicked(){
+    textArea.textContent = "";
+}
 
 function loadBtnClicked(){
     load();
@@ -133,13 +139,14 @@ function nextParagraphBtnClicked() {
     put(wordArea, state.current());
 }
 function decreaseSpeedBtnClicked() {
-    var n = Number(speedInput);
+    var n = Number(speedInput.value);
     if (n > 10) {
 	speedInput.value = n - 10;
     }
 }
 function increaseSpeedBtnClicked() {
-    speedInput.value += 10;
+    var n = Number(speedInput.value);
+    speedInput.value = n + 10;
 }
 
 function getTextFromTextArea(){
@@ -167,10 +174,14 @@ function getWordArray(fullText){
 
 function getPausePeriod(word){
     var f = 1;
-    if (word.endsWith(",")) f = 1.5;
+    if (word.endsWith(",") ||
+        (word.length > 8 && word.length <= 12)) f = 1.5;
     if (word.endsWith(".") ||
 	word.endsWith("!") ||
-	word.endsWith("?")) f = 1.8;
+	word.endsWith("?") ||
+        word.endsWith(")") || 
+        word.endsWith("(") ||
+        word.length > 12) f = 1.8;
     return wpmToMs(speedInput.value) * f;
     /*
     if (word.endsWith(",")) { return COMMA_PAUSE; };
