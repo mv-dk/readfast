@@ -1,0 +1,42 @@
+<html>
+<head>
+<title>Read fast</title>
+</head>
+<style>
+body { margin:0;}
+#wordArea {
+  padding:0;
+  width: 100%;
+  height: 20vw;
+  background-color:red;
+  position: fixed;
+  top: 40%;
+  margin: 0;
+  font-size: 12vw;
+  text-align:center;
+}
+textarea { display:block; }
+#speedInput { width: 8ch; }
+</style>
+<body>
+
+<div id="wordArea">
+euphimistically
+</div>
+
+<textarea id="textarea" rows="4" cols="25"></textarea>
+Speed (wpm)<input id="speedInput" type="text" />
+<button id="decreaseSpeedBtn">-</button>
+<button id="increaseSpeedBtn">+</button>
+
+<div id="buttonArea">
+  <button id="loadBtn">Load</button>
+  <button id="rewindToBeginningBtn">&#124;&lt;</button>
+  <button id="prevParagraphBtn">&lt;&lt;</button>
+  <button id="startBtn">&gt;</button>
+  <button id="pauseBtn">&#124;&#124;</button>
+  <button id="nextParagraphBtn">&gt;&gt;</button>
+</div>
+<script src="readfast.js"></script>
+</body>
+</html>
