@@ -4,14 +4,149 @@ function elem(id){
 
 var textArea = elem("textarea");
 var wordArea = elem("wordArea");
-var startButton = elem("startBtn");
-startButton.onclick = buttonClicked;
+var speedInput = elem("speedInput");
+var textAreaIsDirty = true;
+textArea.onkeyup = function(){
+    textAreaIsDirty = true;
+}
+
+var startBtn = elem("startBtn");
+var loadBtn = elem("loadBtn");
+var rewindToBeginningBtn = elem("rewindToBeginningBtn");
+var prevParagraphBtn = elem("prevParagraphBtn");
+var pauseBtn = elem("pauseBtn");
+var nextParagraphBtn = elem("nextParagraphBtn");
+var decreaseSpeedBtn = elem("decreaseSpeedBtn");
+var increaseSpeedBtn = elem("increaseSpeedBtn");
+
+startBtn.onclick = startBtnClicked;
+loadBtn.onclick = loadBtnClicked;
+rewindToBeginningBtn.onclick = rewindToBeginningBtnClicked;
+prevParagraphBtn.onclick = prevParagraphBtnClicked;
+pauseBtn.onclick = pauseBtnClicked;
+nextParagraphBtn.onclick = nextParagraphBtnClicked;
+decreaseSpeedBtn.onclick = decreaseSpeedBtnClicked;
+increaseSpeedBtn.onclick = increaseSpeedBtnClicked;
+
+NORMAL_PAUSE = 400;
+COMMA_PAUSE = 600;
+PERIOD_PAUSE = 800;
+PARA_PAUSE = 1000;
+
+var state = {
+    wordArray: undefined,
+    idx: 0,
+    current: function(){ 
+	return this.wordArray[this.idx]; 
+    },
+    next: function() {
+	if (this.wordArray == undefined || this.idx >= this.wordArray.length) return undefined;
+	return this.wordArray[this.idx++];
+    },
+    nextWord: function() {
+	if (this.idx+1 >= this.wordArray.length) { return undefined; }
+	return this.wordArray[this.idx+1];
+    },
+    prevSentence: function(){
+	var i = this.idx-2;
+	while (i > 0) {
+	    var word = wordArray[i];
+	    if (word.endsWith(".")) {
+		this.idx = i + 1;
+		break;
+	    }
+	    i--;
+	}
+	if (i == 0) this.idx = 0;
+    },
+    nextSentence: function(){
+	var i = this.idx;
+	var word = this.next();
+	if (word == undefined) return;
+	while (!word.endsWith(".")) {
+	    word = this.next();
+	}
+    }
+};
+
+function loadBtnClicked(){
+    load();
+}
+
+function load(){
+    var text = getTextFromTextArea();
+    wordArray = getWordArray(text);
+    state.wordArray = wordArray;
+    state.idx = 0;
+    put(wordArea, state.wordArray[state.idx]);
+    textAreaIsDirty = false;
+}
+
+function startBtnClicked() {
+    if (textAreaIsDirty) {
+	load();
+    }
+    pause = false;
+    play();
+}
+
+function wpmToMs(wpm){
+    /*
+    var wps = wpm / 60;
+    var wpms = wps / 1000;
+    var msBreak= 1 / wpms;
+    return msBreak;
+    */
+    return 60000 / wpm;
+}
+
+function play(){
+    if (pause) { return; }
+    var word = state.next();
+    if (word == undefined) return;
+    var t = getPausePeriod(word);
+    
+    put(wordArea, word);
+    setTimeout(function (){
+	play();
+    }, t);
+}
+
+function rewindToBeginningBtnClicked() {
+    state.idx = 0;
+    put(wordArea, state.current());
+}
+
+function prevParagraphBtnClicked() {
+    state.prevSentence();
+    put(wordArea, state.current());
+}
+
+var pause = false;
+
+function pauseBtnClicked() {
+    pause = true;
+}
+
+function nextParagraphBtnClicked() {
+    state.nextSentence();
+    put(wordArea, state.current());
+}
+function decreaseSpeedBtnClicked() {
+    var n = Number(speedInput);
+    if (n > 10) {
+	speedInput.value = n - 10;
+    }
+}
+function increaseSpeedBtnClicked() {
+    speedInput.value += 10;
+}
 
 function getTextFromTextArea(){
     return textArea.value;
 }
 
-function put(word){
+function put(wordArea, word){
     wordArea.textContent = word;
 }
 
@@ -30,22 +165,20 @@ function getWordArray(fullText){
     return fullArr;
 }
 
-NORMAL_PAUSE = 400;
-COMMA_PAUSE = 600;
-PERIOD_PAUSE = 800;
-PARA_PAUSE = 1000;
-
 function getPausePeriod(word){
+    var f = 1;
+    if (word.endsWith(",")) f = 1.5;
+    if (word.endsWith(".") ||
+	word.endsWith("!") ||
+	word.endsWith("?")) f = 1.8;
+    return wpmToMs(speedInput.value) * f;
+    /*
     if (word.endsWith(",")) { return COMMA_PAUSE; };
     if (word.endsWith(".")) { return PERIOD_PAUSE; };
     return NORMAL_PAUSE;
+    */
 }
 
-function buttonClicked(){
-    var text = getTextFromTextArea();
-    var words = getWordArray(text);
-    put(words[0]);
-}
 
 (function test(){
     var assertEquals = function(actual, expected){
@@ -98,6 +231,7 @@ function buttonClicked(){
 	assertEquals(wordArray[1], "def");
     }();
 
+    /*
     !function test_pauseNormalWord(){
 	var p = getPausePeriod("huba");
 	assertEquals(p, NORMAL_PAUSE);
@@ -112,6 +246,7 @@ function buttonClicked(){
 	var p = getPausePeriod("huba.");
 	assertEquals(p, PERIOD_PAUSE);
     }();
+    */
 })();
 
 
