@@ -126,6 +126,7 @@ function load(){
     state.idx = 0;
     put(wordArea, state.wordArray[state.idx]);
     textAreaIsDirty = false;
+	updateProgressBar();
 }
 
 function startBtnClicked() {
@@ -166,6 +167,7 @@ function play(){
 function rewindToBeginningBtnClicked() {
     state.idx = 0;
     put(wordArea, state.current());
+	updateProgressBar();
 }
 
 function prevParagraphBtnClicked() {
