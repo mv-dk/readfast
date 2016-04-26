@@ -33,7 +33,8 @@ decreaseSpeedBtn.onclick = decreaseSpeedBtnClicked;
 increaseSpeedBtn.onclick = increaseSpeedBtnClicked;
 
 document.onkeydown = function(e) {
-	//console.log("keyCode: "+e.keyCode);
+	if (document.activeElement === textArea) return;
+
 	if (e.keyCode == 32) { //space
 		if (pause) {
 			startBtnClicked();
