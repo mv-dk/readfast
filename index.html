@@ -3,25 +3,46 @@
 <title>Read fast</title>
 </head>
 <style>
-body { margin:0;}
-#wordArea {
+body {
+  margin:0;
+  background-color: #bbbbbb;
+}
+
+#wordAreaContainer {
   padding:0;
   width: 100%;
   height: 8vw;
-  background-color: #bbbbbb;
+  background-color: #ffffff;
   position: fixed;
   top: 40%;
   margin: 0;
   font-size: 6vw;
   text-align:center;
 }
+
+#wordArea {
+
+}
+
 textarea { display:block; }
 #speedInput { width: 8ch; }
+
+#progressBar {
+  width: 10%;
+  height: 2px;
+  background-color: blue;
+  bottom: 0px;
+  position: absolute;
+}
+
 </style>
 <body>
 
-<div id="wordArea">
-euphimistically
+<div id="wordAreaContainer">
+  <div id="wordArea">
+	Words appear here, yay!
+  </div>
+  <div id="progressBar"></div>
 </div>
 
 <textarea id="textarea" rows="4" cols="25">Mary had a little lamb. John had a mercedes. I have teh codez. What do you have?</textarea>
