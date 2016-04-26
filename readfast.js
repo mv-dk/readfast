@@ -6,6 +6,8 @@ var textArea = elem("textarea");
 var wordArea = elem("wordArea");
 var speedInput = elem("speedInput");
 var textAreaIsDirty = true;
+var totalTimeSpan = elem("totalTime");
+
 textArea.onkeyup = function(){
     textAreaIsDirty = true;
 }
@@ -111,6 +113,25 @@ function setProgressBarPct(percentage){
 	progressBar.style.width = percentage+"%";
 }
 
+function updateTotalTime(){
+	var totalTimeSeconds = 0;
+	if (state.wordArray != undefined) {
+		var numWords = state.wordArray.length;
+		var wordTime = wpmToMs(speedInput.value);
+		totalTimeSeconds = (numWords * wordTime)/1000;
+	}
+
+	totalTimeSpan.innerText = secondsToString(totalTimeSeconds);
+}
+
+function secondsToString(seconds){
+	var mm = Math.round(seconds/60);
+	if (mm < 10) mm = "0"+mm;
+	var ss = Math.round(seconds % 60);
+	if (ss < 10) ss = "0"+ss;
+	return mm + ":" + ss;
+}
+
 function clearBtnClicked(){
     textArea.value = "";
 }
@@ -126,7 +147,9 @@ function load(){
     state.idx = 0;
     put(wordArea, state.wordArray[state.idx]);
     textAreaIsDirty = false;
+	
 	updateProgressBar();
+	updateTotalTime();
 }
 
 function startBtnClicked() {
@@ -193,10 +216,14 @@ function decreaseSpeedBtnClicked() {
     if (n > 10) {
 		speedInput.value = n - 10;
     }
+
+	updateTotalTime();
 }
 function increaseSpeedBtnClicked() {
     var n = Number(speedInput.value);
     speedInput.value = n + 10;
+
+	updateTotalTime();
 }
 
 function getTextFromTextArea(){
