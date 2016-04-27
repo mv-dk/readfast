@@ -113,10 +113,10 @@ function setProgressBarPct(percentage){
 	progressBar.style.width = percentage+"%";
 }
 
-function updateTotalTime(){
+function updateTimeLeft(){
 	var totalTimeSeconds = 0;
 	if (state.wordArray != undefined) {
-		var numWords = state.wordArray.length;
+		var numWords = state.wordArray.length - state.idx;
 		var wordTime = wpmToMs(speedInput.value);
 		totalTimeSeconds = (numWords * wordTime)/1000;
 	}
@@ -125,9 +125,9 @@ function updateTotalTime(){
 }
 
 function secondsToString(seconds){
-	var mm = Math.round(seconds/60);
+	var mm = Math.floor(seconds/60);
 	if (mm < 10) mm = "0"+mm;
-	var ss = Math.round(seconds % 60);
+	var ss = Math.floor(seconds % 60);
 	if (ss < 10) ss = "0"+ss;
 	return mm + ":" + ss;
 }
@@ -149,7 +149,7 @@ function load(){
     textAreaIsDirty = false;
 	
 	updateProgressBar();
-	updateTotalTime();
+	updateTimeLeft();
 }
 
 function startBtnClicked() {
@@ -177,26 +177,27 @@ function wpmToMs(wpm){
 function play(){
     if (pause) { return; }
 	updateProgressBar();
+	updateTimeLeft();
     var word = state.next();
     if (word == undefined) return;
     var t = getPausePeriod(word);
     
     put(wordArea, word);
-    setTimeout(function (){
-		play();
-    }, t);
+    setTimeout(play, t);
 }
 
 function rewindToBeginningBtnClicked() {
     state.idx = 0;
     put(wordArea, state.current());
 	updateProgressBar();
+	updateTimeLeft();
 }
 
 function prevParagraphBtnClicked() {
     state.prevSentence();
     put(wordArea, state.current());
 	updateProgressBar();
+	updateTimeLeft();
 }
 
 function pauseBtnClicked() {
@@ -210,6 +211,7 @@ function nextParagraphBtnClicked() {
     state.nextSentence();
     put(wordArea, state.current());
 	updateProgressBar();
+	updateTimeLeft();
 }
 function decreaseSpeedBtnClicked() {
     var n = Number(speedInput.value);
@@ -217,13 +219,13 @@ function decreaseSpeedBtnClicked() {
 		speedInput.value = n - 10;
     }
 
-	updateTotalTime();
+	updateTimeLeft();
 }
 function increaseSpeedBtnClicked() {
     var n = Number(speedInput.value);
     speedInput.value = n + 10;
 
-	updateTotalTime();
+	updateTimeLeft();
 }
 
 function getTextFromTextArea(){

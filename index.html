@@ -1,13 +1,7 @@
 <html>
 <head>
 <title>Read fast</title>
-</head>
 <style>
-body {
-  margin:0;
-  background-color: #bbbbbb;
-}
-
 #wordAreaContainer {
   padding:0;
   width: 100%;
@@ -16,12 +10,12 @@ body {
   position: fixed;
   top: 40%;
   margin: 0;
-  font-size: 6vw;
+  font-size: 6vmax;
   text-align:center;
 }
 
 textarea { display:block; }
-#speedInput { width: 8ch; }
+#speedInput { width: 5ch; }
 
 #progressBar {
   width: 10%;
@@ -31,17 +25,46 @@ textarea { display:block; }
   position: absolute;
 }
 
+
+@media screen and (max-width: 1000px) {
+  body {
+    background-color: red;
+  }
+
+  #wordAreaContainer {
+    top: 25%;
+    height: 30%;
+    font-size: 8vmax;
+  }
+
+  #progressBar {
+    width: 10%;
+    height: 8px;
+    background-color: blue;
+    bottom: 0px;
+    position: absolute;
+  }
+}
+
+@media screen and (min-width: 1000px) {
+  body {
+    margin:0;
+    background-color: #bbbbbb;
+  }
+}
+
 </style>
+</head>
 <body>
 
 <div id="wordAreaContainer">
   <div id="wordArea">
-	Words appear here, yay!
+	Words!
   </div>
   <div id="progressBar"></div>
 </div>
 
-<textarea id="textarea" rows="4" cols="25">Mary had a little lamb. John had a mercedes. I have teh codez. What do you have?</textarea>
+<textarea id="textarea" rows="1" cols="10">Mary had a little lamb. John had a mercedes. I have teh codez. What do you have?</textarea>
 Speed [wpm] <input id="speedInput" type="text" value="300" />
 <button id="decreaseSpeedBtn">-</button>
 <button id="increaseSpeedBtn">+</button>
